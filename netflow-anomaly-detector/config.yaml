@@ -1,0 +1,33 @@
+# Configuration for the Network Anomaly Detection pipeline
+
+data:
+  # Path to input flow log (CSV). If it doesn't exist, a synthetic demo dataset is generated.
+  input_path: "data/flows.csv"
+  # Size of rolling window (in minutes) used to build per-source-IP behavioral features
+  window_minutes: 5
+
+model:
+  type: "isolation_forest"        # options: isolation_forest, lof
+  contamination: 0.02             # expected proportion of anomalous flows/windows (tune to your environment)
+  n_estimators: 200
+  random_state: 42
+
+scoring:
+  # Anomaly score threshold above which an alert is raised.
+  # IsolationForest decision_function: lower (more negative) = more anomalous.
+  # We convert to a 0-100 risk score where 100 = most anomalous.
+  alert_risk_threshold: 70
+
+beacon_detector:
+  # Minimum connections between a src/dst pair before evaluating periodicity
+  min_connections: 8
+  # Max coefficient of variation (std/mean of interval) to flag as regular/beacon-like.
+  # Lower = stricter (fewer false positives, may miss jittered beacons).
+  cov_threshold: 0.3
+
+alerting:
+  output_path: "output/alerts.json"
+  top_n_features: 5   # number of contributing features to explain in each alert
+
+logging:
+  level: "INFO"
