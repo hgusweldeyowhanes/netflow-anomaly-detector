@@ -1,0 +1,18 @@
+# Replit configuration for Network Anomaly Detector
+
+run = "python api.py"
+
+[env]
+PYTHON_VERSION = "3.10"
+FLASK_ENV = "production"
+FLASK_APP = "api.py"
+
+[packager]
+language = "python3"
+
+[packager.features]
+packageSearch = true
+
+[[ports]]
+localPort = 8000
+externalPort = 80
