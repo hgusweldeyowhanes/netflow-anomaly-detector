@@ -11,14 +11,11 @@ import json
 import traceback
 from datetime import datetime
 
-# Add src to path
+# Make the bundled analysis package (src/) importable. The heavy scientific
+# libraries (pandas/numpy/scikit-learn) are imported lazily inside the routes
+# below so that the app can start and pass health checks even if those imports
+# are slow or unavailable at boot time.
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'netflow-anomaly-detector'))
-
-from src.feature_extraction import load_flows, build_features, FEATURE_COLUMNS
-from src.model import AnomalyModel
-from src.alerting import build_alerts, write_alerts
-from src.data_generator import generate_dataset
-from src.beacon_detector import detect_beacons, beacon_alerts
 
 import yaml
 
@@ -60,6 +57,12 @@ def health():
 def get_alerts():
     """Get current alerts"""
     try:
+        from src.feature_extraction import load_flows, build_features
+        from src.model import AnomalyModel
+        from src.alerting import build_alerts
+        from src.data_generator import generate_dataset
+        from src.beacon_detector import detect_beacons, beacon_alerts
+
         cfg = CONFIG
         
         # Ensure data directory exists and generate demo if needed
@@ -140,6 +143,10 @@ def get_alerts():
 def analyze_flows():
     """Analyze uploaded CSV file"""
     try:
+        from src.feature_extraction import load_flows, build_features
+        from src.model import AnomalyModel
+        from src.alerting import build_alerts, write_alerts
+
         if 'file' not in request.files:
             return jsonify({'error': 'No file part'}), 400
         
