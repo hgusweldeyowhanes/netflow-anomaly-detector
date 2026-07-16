@@ -33,13 +33,23 @@ def load_config(path: str = 'netflow-anomaly-detector/config.yaml') -> dict:
     except:
         return {
             'data': {'input_path': 'netflow-anomaly-detector/data/flows.csv', 'window_minutes': 5},
-            'model': {'type': 'isolation_forest', 'contamination': 0.02, 'n_estimators': 200},
+            'model': {'type': 'isolation_forest', 'contamination': 0.02, 'n_estimators': 200, 'random_state': 42},
             'scoring': {'alert_risk_threshold': 70},
             'beacon_detector': {'min_connections': 8, 'cov_threshold': 0.3},
             'alerting': {'output_path': 'netflow-anomaly-detector/output/alerts.json', 'top_n_features': 5}
         }
 
 CONFIG = load_config()
+
+@app.route('/', methods=['GET'])
+def root():
+    """Root health check (used by Replit/hosting platform healthchecks)"""
+    return jsonify({
+        'service': 'Network Anomaly Detector API',
+        'status': 'healthy',
+        'endpoints': ['/api/health', '/api/alerts', '/api/analyze', '/api/config', '/api/download-alerts'],
+        'timestamp': datetime.now().isoformat()
+    }), 200
 
 @app.route('/api/health', methods=['GET'])
 def health():
@@ -227,4 +237,5 @@ if __name__ == '__main__':
     print("  GET  /api/config - Get configuration")
     print("  GET  /api/download-alerts - Download alerts")
     
-    app.run(debug=False, port=8000, host='0.0.0.0')
+    port = int(os.environ.get('PORT', 8000))
+    app.run(debug=False, port=port, host='0.0.0.0')
