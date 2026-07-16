@@ -1,0 +1,20 @@
+# Netlify configuration for netflow-anomaly-detector
+
+[build]
+  command = "npm run build"
+  functions = "netlify/functions"
+  publish = "build"
+
+# Redirect all API calls to functions
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+# Set PYTHON_API_URL in Netlify dashboard:
+# Site settings → Environment variables → Add variable
+
+# Serverless functions configuration
+[functions]
+  node_bundler = "esbuild"
+  included_files = ["src/**"]

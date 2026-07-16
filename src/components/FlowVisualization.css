@@ -1,0 +1,23 @@
+.flow-viz-panel {
+  flex: 1;
+  min-height: 350px;
+}
+
+.flow-viz {
+  width: 100%;
+}
+
+.flow-viz svg {
+  width: 100%;
+  height: auto;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  background: white;
+}
+
+.viz-description {
+  margin: 1rem 0 0 0;
+  font-size: 0.9rem;
+  color: #666;
+  text-align: center;
+}
