@@ -18,7 +18,9 @@ localPort = 8000
 externalPort = 80
 
 # Deployment configuration (used when you click "Publish"/"Deploy").
-# Runs the app with a production WSGI server bound to the expected port 8000.
+# The build step installs Python dependencies into the deployment image;
+# the run step starts a production WSGI server bound to the expected port 8000.
 [deployment]
 deploymentTarget = "autoscale"
+build = ["sh", "-c", "pip install -r requirements.txt"]
 run = ["gunicorn", "--bind", "0.0.0.0:8000", "--timeout", "120", "--workers", "1", "api:app"]
